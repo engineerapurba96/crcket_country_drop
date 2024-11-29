@@ -1,0 +1,96 @@
+<div class="container mt-4" *ngIf="!_.isEmpty(scheduleDet)">
+  <div class="match-result  my-4">
+    <h4>{{ getMatchResult() }}</h4>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6" *ngFor="let teamDet of cricketScore; let i = index">
+      <div class="card mb-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">{{ teamDet.team_name }} Innings</h5>
+          <p class="mb-0 text-end">
+            Total: {{ teamDet.scoreCardDet.totalRuns }} ({{ teamDet.scoreCardDet.wickets }} wkts,
+            {{ teamDet.scoreCardDet.overs }} Ov)
+          </p>
+        </div>
+        <div class="card-body">
+          <h6>Batter</h6>
+          <table class="table table-bordered">
+            <thead>
+              <tr class="table-secondary">
+                <th>Name</th>
+                <th>R</th>
+                <th>B</th>
+                <th>4s</th>
+                <th>6s</th>
+                <th>SR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let batter of teamDet.scoreCardDet.playerWiseScore">
+                <tr *ngIf="batter.ballsFaced > 1">
+                  <td style="cursor: pointer;">
+                    <a style="text-decoration: underline; color: #1866db;" class="link-button"
+                      routerLink="/player-detail/{{teamDet.team_id}}/{{batter?.Player_id}}">{{ batter.Player_name }}</a>
+                  </td>
+                  <td>{{ batter.bowlRun }}</td>
+                  <td>{{ batter.ballsFaced }}</td>
+                  <td>{{ batter.fours }}</td>
+                  <td>{{ batter.sixes }}</td>
+                  <td>{{ ((batter.bowlRun / batter.ballsFaced) * 100).toFixed(2) }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+
+          <p>Extras: {{ teamDet.scoreCardDet.extras }}</p>
+
+          <h6>Yet to Bat</h6>
+          <p>{{ yetToBat(teamDet.scoreCardDet.playerWiseScore) }}</p>
+        </div>
+        <!-- bowler -->
+        <div class="card-body">
+          <h6>Bowler</h6>
+          <table class="table table-bordered">
+            <thead>
+              <tr class="table-secondary">
+                <th>Name</th>
+                <th>Over</th>
+                <th>R</th>
+                <th>W</th>
+                <th>NB</th>
+                <th>WD</th>
+                <th>ECO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let batter of cricketScore[i == 0 ? 1 : 0].scoreCardDet.playerWiseScore">
+                <tr *ngIf="batter.bowling > 1">
+                  <td style="cursor: pointer;">
+                    <a style="text-decoration: underline; color: #1866db;" class="link-button"
+                      routerLink="/player-detail/{{cricketScore[i == 0 ? 1 : 0].team_id}}/{{batter?.Player_id}}">{{ batter.Player_name
+                      }}</a>
+
+                      <!-- {{cricketScore[i == 0 ? 1 : 0].team_id}} -->
+                  </td>
+                  <td>{{ getOvers(batter.bowling) }}</td>
+                  <td>{{ batter.runs }}</td>
+                  <td>{{ batter.wickets }}</td>
+                  <td>{{ batter.nb }}</td>
+                  <td>{{ batter.wide }}</td>
+                  <td>
+                    {{
+                    batter?.bowling && batter?.runs
+                    ? (batter.runs / batter.bowling).toFixed(2)
+                    : '0.00'
+                    }}
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

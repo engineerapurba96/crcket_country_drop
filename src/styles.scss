@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+a {
+    cursor: pointer;
+}
+.link-button {
+    text-decoration: none;
+    color: #000;
+    margin-left: 0.25rem;
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+.invalid-feedback {
+  font-size: .8em;
+  text-align: end;
+}

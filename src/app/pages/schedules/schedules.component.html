@@ -1,0 +1,168 @@
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <h4>Schedules</h4>
+        <button class="btn btn-primary btn-sm" (click)="openScheduleModal()">Create New</button>
+    </div>
+    <div class="form-group w-auto" style="max-width: 300px;">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search match, venue, host, format"
+                [(ngModel)]="searchText" (input)="searchTeam()" />
+
+        </div>
+    </div>
+    <div class="table-responsive border rounded mt-3">
+        <table class="table text-center align-middle table-borderless table-striped mt-2 mb-0">
+            <thead>
+                <tr class="border-2 border-top-0 border-start-0 border-end-0 border-info">
+                    <th class="text-start">Match</th>
+                    <th>Tournament</th>
+                    <th>Format</th>
+                    <th>Date</th>
+                    <th class="text-start">Venue</th>
+                    <th class="text-start">Host</th>
+                    <th>Scoring</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="schedules.length > 0; else NoRecords">
+                    <tr class="border-bottom" *ngFor="let schedule of schedules; let idx = index">
+                        <td class="text-start p-3">
+                            <img src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{schedule.teamA.team_id}}.png?v=7"
+                                alt="{{schedule.teamA?.team_name}}" style="width: 34px;height: 20px;"
+                                class="team-logo border" />
+                            <a class="link-button" routerLink="/team-detail/{{schedule.teamA.team_id}}">{{
+                                schedule.teamA?.team_name }}</a>
+                            <span class="mx-2">vs</span> <br><br>
+                            <img src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{schedule.teamB.team_id}}.png?v=7"
+                                alt="{{schedule.teamB?.team_name}}" style="width: 34px;height: 20px;"
+                                class="team-logo border" />
+                            <a class="link-button" routerLink="/team-detail/{{schedule.teamB.team_id}}">{{
+                                schedule.teamB?.team_name }}</a>
+                        </td>
+                        <td>{{ schedule.tournament }}</td>
+                        <td>{{ schedule.format }}</td>
+                        <td>{{ schedule.date }} {{schedule.time}}</td>
+                        <td class="text-start">{{ schedule.venue }}</td>
+                        <td class="text-start">{{ schedule.hostName }}</td>
+                        <!-- <td>
+                        <button class="btn btn-sm btn-secondary mx-2" (click)="openScheduleModal(schedule)">Edit</button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteSchedule(schedule)">Delete</button>
+                    </td> -->
+                        <td>
+                            <button class="btn btn-sm btn-secondary" [routerLink]="['/match-setup/'+idx]">View</button>
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-template #NoRecords>
+                    <tr>
+                        <td colspan="6" class="text-center text-secondary">No records found</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scheduleModalLabel">{{ isEditMode ? 'Edit Schedule' : 'Create Schedule' }}
+                </h5>
+                <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="tournament" class="form-label">Tournament</label>
+                            <select class="form-select" id="tournament" formControlName="tournament" name="tournament"
+                                [ngClass]="{ 'is-invalid': submitted && f.tournament.errors }">
+                                <option value="" disabled>Select Tournament</option>
+                                <option *ngFor="let tourna of tournaments" [value]="tourna.name">{{ tourna.name }}</option>
+                            </select>
+                            <div *ngIf="submitted && f.tournament.errors" class="invalid-feedback">
+                                <div *ngIf="f.tournament.errors.required">Tournament is required</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teamA" class="form-label">Team A</label>
+                            <select class="form-select" id="teamA" formControlName="teamA" name="teamA"
+                                [ngClass]="{ 'is-invalid': submitted && f.teamA.errors }">
+                                <option value="" disabled>Select Team A</option>
+                                <option *ngFor="let team of teams" [value]="team.team_id">{{ team.team_name }}</option>
+                            </select>
+                            <div *ngIf="submitted && f.teamA.errors" class="invalid-feedback">
+                                <div *ngIf="f.teamA.errors.required">Team A is required</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teamB" class="form-label">Team B</label>
+                            <select class="form-select" id="teamB" formControlName="teamB" name="teamB"
+                                [ngClass]="{ 'is-invalid': submitted && f.teamB.errors }">
+                                <option value="" disabled>Select Team B</option>
+                                <option *ngFor="let team of teams" [value]="team.team_id">{{ team.team_name }}</option>
+                            </select>
+                            <div *ngIf="submitted && f.teamB.errors" class="invalid-feedback">
+                                <div *ngIf="f.teamB.errors.required">Team B is required</div>
+                                <div *ngIf="f.teamB.errors.sameTeam">Team B and Team B not same</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="format" class="form-label">Format</label>
+                            <select class="form-select" id="format" formControlName="format" name="format"
+                                [ngClass]="{ 'is-invalid': submitted && f.format.errors }">
+                                <option value="" disabled>Select Format</option>
+                                <option *ngFor="let format of ['T20','ODI','Test']" [value]="format">{{ format }}
+                                </option>
+                            </select>
+                            <div *ngIf="submitted && f.format.errors" class="invalid-feedback">
+                                <div *ngIf="f.format.errors.required">Format is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" formControlName="date"
+                                [ngClass]="{ 'is-invalid': submitted && f.date.errors }">
+                            <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
+                                <div *ngIf="f.date.errors.required">Date is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="time" class="form-label">Time</label>
+                            <input type="time" class="form-control" id="time" formControlName="time"
+                                [ngClass]="{ 'is-invalid': submitted && f.time.errors }">
+                            <div *ngIf="submitted && f.time.errors" class="invalid-feedback">
+                                <div *ngIf="f.time.errors.required">Time is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="venue" class="form-label">Venue</label>
+                            <input type="text" class="form-control" id="venue" formControlName="venue"
+                                [ngClass]="{ 'is-invalid': submitted && f.venue.errors }" placeholder="Enter venue">
+                            <div *ngIf="submitted && f.venue.errors" class="invalid-feedback">
+                                <div *ngIf="f.venue.errors.required">Venue is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="hostId" class="form-label">Host</label>
+                            <select class="form-select" id="hostId" formControlName="hostId" name="hostId"
+                                [ngClass]="{ 'is-invalid': submitted && f.hostId.errors }">
+                                <option value="" disabled>Select Host</option>
+                                <option *ngFor="let team of teams" [value]="team.team_id">{{ team.team_name }}</option>
+                            </select>
+                            <div *ngIf="submitted && f.hostId.errors" class="invalid-feedback">
+                                <div *ngIf="f.hostId.errors.required">Host is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update' : 'Create' }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between">
+    <h4>Match Setup</h4>
+  </div>
+  <form [formGroup]="teamDetailsForm">
+    <div class="row mt-4">
+      <div class="col-12 d-flex justify-content-start">
+        <div class="mb-3" style="max-width: 200px;">
+          <label for="overs" class="form-label">Overs</label>
+          <input type="number" class="form-control" id="overs" formControlName="overs" [ngClass]="{ 'is-invalid': submitted && f.overs.errors }" placeholder="Enter nuber of overs">
+          <div *ngIf="submitted && f.overs.errors" class="invalid-feedback">
+              <div *ngIf="f.overs.errors.required">Over is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card">
+            <div class="card-header text-center">
+              <img src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{scheduleDet.teamA.team_id}}.png?v=7" alt="{{scheduleDet.teamA.team_name}}" style="width: 34px;height: 20px;" class="team-logo border" />
+              <a class="link-button" routerLink="/team-detail/{{scheduleDet.teamA.team_id}}">{{ scheduleDet.teamA.team_name }}</a>
+
+              <!-- <a class="link-button" routerLink="/team-detail/{{scheduleDet.teamA.team_id}}">{{ scheduleDet.teamA.team_name }}</a> -->
+            </div>
+            <div class="card-body" formGroupName="teamA">
+              <div class="mb-3">
+                <label for="participants" class="form-label">Players</label>
+                <ng-select
+                  [multiple]="true"
+                  placeholder="Select players"
+                  formControlName="players"
+                  [items]="playerDetails.teamA"
+                  bindValue="Player_id"
+                  bindLabel="Player_name"
+                  [closeOnSelect]="false"
+                  [ngClass]="{ 'is-invalid border-danger border border-1 rounded': submitted && teamAf.players.errors }">
+                  <ng-template ng-header-tmp>
+                    <button (click)="selectAll('teamA')" class="btn btn-sm btn-secondary">Select all</button>
+                    <!-- <button (click)="unselectAll('teamA')" class="btn btn-sm btn-secondary ms-2">Unselect all</button> -->
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    <ng-container *ngIf="playerDetails.teamA.length != teamAf.players.value.length">
+                      <div class="ng-value px-1 bg-primary-subtle" *ngFor="let item of items | slice:0:2">
+                        {{ _.get(item,'Player_name') }}
+                      </div>
+                      <div class="ng-value px-1 bg-primary-subtle" *ngIf="items.length > 2">
+                        <span class="ng-value-label">{{items.length - 2}} more...</span>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="playerDetails.teamA.length == teamAf.players.value.length">
+                      <div class="ng-value px-1 bg-primary-subtle">
+                        All Players Selected
+                      </div>
+                    </ng-container>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <div class="d-flex justify-content-start align-items-center">
+                      <input id="item-{{index}}" class="me-2" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{standalone: true}"/>
+                      {{item['Player_name']}}
+                    </div>
+                  </ng-template>
+                </ng-select>
+                <div *ngIf="submitted && teamAf.players.errors" class="invalid-feedback">
+                    <div *ngIf="teamAf.players.errors.required">Players are required</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="captain" class="form-label">Captain</label>
+                <select class="form-select" id="captain" formControlName="captain" name="captain" [ngClass]="{ 'is-invalid': submitted && teamAf.captain.errors }">
+                    <option value="" disabled>Select Captain</option>
+                    <ng-container *ngFor="let player of playerDetails.teamA">
+                      <option *ngIf="_.includes(teamAf.players.value, player.Player_id)" [value]="player.Player_id">{{ player.Player_name }}</option>
+                    </ng-container>
+                </select>
+                <div *ngIf="submitted && teamAf.captain.errors" class="invalid-feedback">
+                    <div *ngIf="teamAf.captain.errors.required">Captain is required</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="wicketKeeper" class="form-label">Wicket Keeper</label>
+                <select class="form-select" id="wicketKeeper" formControlName="wicketKeeper" name="wicketKeeper" [ngClass]="{ 'is-invalid': submitted && teamAf.wicketKeeper.errors }">
+                    <option value="" disabled>Select Wicket Keeper</option>
+                    <ng-container *ngFor="let player of playerDetails.teamA">
+                      <option *ngIf="_.includes(teamAf.players.value, player.Player_id)" [value]="player.Player_id">{{ player.Player_name }}</option>
+                    </ng-container>
+                </select>
+                <div *ngIf="submitted && teamAf.wicketKeeper.errors" class="invalid-feedback">
+                    <div *ngIf="teamAf.wicketKeeper.errors.required">Wicket Keeper is required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card">
+            <div class="card-header text-center">
+              <img src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{scheduleDet.teamB.team_id}}.png?v=7" alt="{{scheduleDet.teamB.team_name}}" style="width: 34px;height: 20px;" class="team-logo border" />
+              <a class="link-button" routerLink="/team-detail/{{scheduleDet.teamB.team_id}}">{{ scheduleDet.teamB.team_name }}</a>
+
+              <!-- <a class="link-button" routerLink="/team-detail/{{scheduleDet.teamB.team_id}}">{{ scheduleDet.teamB.team_name }}</a> -->
+            </div>
+            <div class="card-body" formGroupName="teamB">
+              <div class="mb-3">
+                <label for="participants" class="form-label">Players</label>
+                <ng-select
+                  [multiple]="true"
+                  placeholder="Select players"
+                  formControlName="players"
+                  [items]="playerDetails.teamB"
+                  bindValue="Player_id"
+                  bindLabel="Player_name"
+                  [closeOnSelect]="false"
+                  [ngClass]="{ 'is-invalid border-danger border border-1 rounded': submitted && teamBf.players.errors }">
+                  <ng-template ng-header-tmp>
+                    <button (click)="selectAll('teamB')" class="btn btn-sm btn-secondary">Select all</button>
+                    <!-- <button (click)="unselectAll('teamB')" class="btn btn-sm btn-secondary ms-2">Unselect all</button> -->
+                  </ng-template>
+                  <ng-template ng-multi-label-tmp let-items="items">
+                    <ng-container *ngIf="playerDetails.teamB.length != teamBf.players.value.length">
+                      <div class="ng-value px-1 bg-primary-subtle" *ngFor="let item of items | slice:0:2">
+                        {{ _.get(item,'Player_name') }}
+                      </div>
+                      <div class="ng-value px-1 bg-primary-subtle" *ngIf="items.length > 2">
+                        <span class="ng-value-label">{{items.length - 2}} more...</span>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="playerDetails.teamB.length == teamBf.players.value.length">
+                      <div class="ng-value px-1 bg-primary-subtle">
+                        All Players Selected
+                      </div>
+                    </ng-container>
+                  </ng-template>
+                  <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <div class="d-flex justify-content-start align-items-center">
+                      <input id="item-{{index}}" class="me-2" type="checkbox" [ngModel]="item$.selected" [ngModelOptions]="{standalone: true}"/>
+                      {{item['Player_name']}}
+                    </div>
+                  </ng-template>
+                </ng-select>
+                <div *ngIf="submitted && teamBf.players.errors" class="invalid-feedback">
+                    <div *ngIf="teamBf.players.errors.required">Players are required</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="captain" class="form-label">Captain</label>
+                <select class="form-select" id="captain" formControlName="captain" name="captain" [ngClass]="{ 'is-invalid': submitted && teamBf.captain.errors }">
+                    <option value="" disabled>Select Captain</option>
+                    <ng-container  *ngFor="let player of playerDetails.teamB">
+                      <option *ngIf="_.includes(teamBf.players.value, player.Player_id)" [value]="player.Player_id">{{ player.Player_name }}</option>
+                    </ng-container>
+                </select>
+                <div *ngIf="submitted && teamBf.captain.errors" class="invalid-feedback">
+                    <div *ngIf="teamBf.captain.errors.required">Captain is required</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="wicketKeeper" class="form-label">Wicket Keeper</label>
+                <select class="form-select" id="wicketKeeper" formControlName="wicketKeeper" name="wicketKeeper" [ngClass]="{ 'is-invalid': submitted && teamBf.wicketKeeper.errors }">
+                    <option value="" disabled>Select Wicket Keeper</option>
+                    <ng-container  *ngFor="let player of playerDetails.teamB">
+                      <option *ngIf="_.includes(teamBf.players.value, player.Player_id)" [value]="player.Player_id">{{ player.Player_name }}</option>
+                    </ng-container>
+                </select>
+                <div *ngIf="submitted && teamBf.wicketKeeper.errors" class="invalid-feedback">
+                    <div *ngIf="teamBf.wicketKeeper.errors.required">Wicket Keeper is required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <button type="submit" (click)="saveMatchDetails()" class="btn btn-primary px-5 btn-sm mt-5">Save</button>
+    </div>
+  </form>
+</div>

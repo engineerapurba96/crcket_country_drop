@@ -1,0 +1,133 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header py-3">
+      <h4 class="text-center">Cricket Scorer</h4>
+    </div>
+    <div class="card-body">
+      <!-- Batting Team -->
+      <div class="text-center mb-4" *ngIf="currentBattingTeam !== null">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="batting-team">Select Batting Team:</label>
+            <select id="batting-team" [(ngModel)]="currentBattingTeam" (change)="onTeamSelect(currentBattingTeam)"
+              (ngModelChange)="currentStriker = '';currentNonStriker = ''" class="form-control w-100 mx-auto">
+              <option [ngValue]="0">{{scheduleDet?.teamA?.team_name}}</option>
+              <option [ngValue]="1">{{scheduleDet?.teamB?.team_name}}</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="striker">Striker:</label>
+            <select id="striker" [(ngModel)]="currentStriker" class="form-control w-100 mx-auto">
+              <option *ngFor="let player of getCurrentTeamPlayers(); let i = index" [ngValue]="player.Player_name"
+                [disabled]="player.Player_name === currentNonStriker || player.isOut">
+                {{ player.Player_name }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="non-striker">Non-Striker:</label>
+            <select id="non-striker" [(ngModel)]="currentNonStriker" class="form-control w-100 mx-auto">
+              <option *ngFor="let player of getCurrentTeamPlayers(); let i = index" [ngValue]="player.Player_name"
+                [disabled]="player.Player_name === currentStriker || player.isOut">
+                {{ player.Player_name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Bolling Team -->
+      <div class="text-center mb-4" *ngIf="currentBowlingTeam !== null">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="batting-team">Select Bowling Team:</label>
+            <select id="batting-team" [(ngModel)]="currentBowlingTeam" class="form-control w-100 mx-auto" disabled>
+              <option [ngValue]="0">{{scheduleDet?.teamA?.team_name}}</option>
+              <option [ngValue]="1">{{scheduleDet?.teamB?.team_name}}</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="striker">Bowler:</label>
+            <select id="striker" [(ngModel)]="currentBowler" class="form-control w-100 mx-auto">
+              <option *ngFor="let player of getCurrentBowlPlayers(); let i = index" [ngValue]="player.Player_name"
+                [disabled]="player.Player_name === currentNonStriker || player.isOut">
+                {{ player.Player_name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center mt-4">
+        <button class="btn btn-primary mx-2" (click)="ballResult(0)">0</button>
+        <button class="btn btn-primary mx-2" (click)="ballResult(1)">1 Run</button>
+        <button class="btn btn-primary mx-2" (click)="ballResult(2)">2 Runs</button>
+        <button class="btn btn-primary mx-2" (click)="ballResult(4)">4 Runs</button>
+        <button class="btn btn-primary mx-2" (click)="ballResult(6)">6 Runs</button>
+        <button class="btn btn-danger mx-2" (click)="ballResult()">Wicket</button>
+        <button class="btn btn-warning mx-2" (click)="ballResult(1,'WD')">Wide</button>
+        <button class="btn btn-warning mx-2" (click)="ballResult(1,'NB')">No Ball</button>
+      </div>
+      <div class="mt-5">
+        <h3 class="bg-secondary py-2 px-3 text-bg-danger rounded text-start">Scorecard</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header text-center">
+                <!-- <img
+                  src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{scheduleDet.teamA.team_id}}.png?v=7"
+                  alt="{{scheduleDet.teamA.team_name}}" style="width: 34px;height: 20px;" class="team-logo border" /> -->
+                {{ scheduleDet.teamA.team_name }}
+              </div>
+              <div class="card-body">
+                <div *ngFor="let over of teamA.score" class="mb-3">
+                  <p class="fw-bold mb-0">Over {{ over.overNumber }}</p>
+                  <div class="d-flex justify-content-between">
+                    <!-- <span class="ball" *ngFor="let ball of over.scoreCard">{{ ball != '' ? ball : '-' }}</span> -->
+                    <span class="ball" *ngFor="let ball of over.scoreCard"> {{ ball === '' || ball === null || ball ===
+                      undefined ? '-' : ball }} </span>
+
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer p-0 overflow-hidden">
+                <div class="d-flex justify-content-between bg-secondary pt-2 px-3 text-white fw-bold">
+                  <p>Extras: <span>{{ teamA.extras }}</span></p>
+                  <p>SCORE: <span>{{ teamA.totalRuns }} - {{ teamA.wickets }}</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header text-center">
+                <!-- <img
+                  src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{scheduleDet.teamB.team_id}}.png?v=7"
+                  alt="{{scheduleDet.teamB.team_name}}" style="width: 34px;height: 20px;" class="team-logo border" /> -->
+                {{ scheduleDet.teamB.team_name }}
+              </div>
+              <div class="card-body">
+                <div *ngFor="let over of teamB.score" class="mb-3">
+                  <p class="fw-bold mb-0">Over {{ over.overNumber }}</p>
+                  <div class="d-flex justify-content-between">
+                    <span class="ball" *ngFor="let ball of over.scoreCard">{{ ball === '' || ball === null || ball ===
+                      undefined ? '-' : ball }} </span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer p-0 overflow-hidden">
+                <div class="d-flex justify-content-between bg-secondary pt-2 px-3 text-white fw-bold">
+                  <p>Extras: <span>{{ teamB.extras }}</span></p>
+                  <p>SCORE: <span>{{ teamB.totalRuns }} - {{ teamB.wickets }}</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-secondary px-5 btn-sm mt-5 mx-2" (click)="resetMatch()">Reset</button>
+        <button type="submit" class="btn btn-primary px-5 btn-sm mt-5" (click)="save_score()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

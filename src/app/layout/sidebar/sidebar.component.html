@@ -1,0 +1,24 @@
+<div class="sidebar z-1" [class.collapsed]="sidebarOpen">
+    <ul class="nav flex-column mt-5 pt-2">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/teams" routerLinkActive="active">
+          <i class="bi bi-collection"></i> <span *ngIf="!sidebarOpen">Teams</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/players" routerLinkActive="active">
+          <i class="bi bi-person-lines-fill"></i> <span *ngIf="!sidebarOpen">Players</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/tournaments" routerLinkActive="active">
+          <i class="bi bi-trophy"></i> <span *ngIf="!sidebarOpen">Tournaments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/schedules" routerLinkActive="active">
+          <i class="bi bi-calendar"></i> <span *ngIf="!sidebarOpen">Schedules</span>
+        </a>
+      </li>
+    </ul>
+  </div>

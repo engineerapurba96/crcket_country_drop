@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="d-flex justify-content-between">
+    <h4>Points Table</h4>
+  </div>
+  <div class="form-group w-auto" style="max-width: 300px;">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search Teams.." [(ngModel)]="searchText"
+        (ngModelChange)="searchTeam()" />
+    </div>
+  </div>
+  <div class="table-responsive border rounded mt-3">
+    <table class="table text-center table-borderless table-striped mt-2 mb-0">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Team</th>
+          <th>M</th>
+          <th>W</th>
+          <th>L</th>
+          <th>NRR</th>
+          <th>Pts</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let team of filteredTeams; let i = index" else NoRecords>
+          <td>{{ i + 1 }}</td>
+          <td>{{ team.team_name }}</td>
+          <td>{{ team.matches }}</td>
+          <td>{{ team.wins }}</td>
+          <td>{{ team.losses }}</td>
+          <td>{{ team.nrr.toFixed(2) }}</td>
+          <td>{{ team.points }}</td>
+        </tr>
+        <ng-template #NoRecords>
+          <tr>
+            <td colspan="7" class="text-center text-secondary">No records found</td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+</div>

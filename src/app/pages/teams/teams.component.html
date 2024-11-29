@@ -1,0 +1,123 @@
+<div class="container">
+  <div class="d-flex justify-content-between">
+    <h4 class="mt-0">Teams List</h4>
+    <button class="btn btn-primary btn-sm" (click)="openTeamModal()">
+      Add Team
+    </button>
+  </div>
+  <div class="form-group w-auto" style="max-width: 300px">
+    <div class="input-group">
+      <input type="text" [(ngModel)]="searchText" (input)="searchTeam()" placeholder="Search teams..."
+        class="form-control" />
+
+    </div>
+  </div>
+  <div class="table-responsive border rounded mt-3">
+    <table class="table text-center table-borderless table-striped mt-2 mb-0">
+      <thead>
+        <tr class="border-2 border-top-0 border-start-0 border-end-0 border-info text-center">
+          <th>Id</th>
+          <th class="text-start">Team</th>
+          <th>Matches</th>
+          <th>Points</th>
+          <th>Rating</th>
+          <th>Team Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="teams.length > 0; else NoRecords">
+          <tr class="border-bottom" *ngFor="let team of teams">
+            <td>{{ team.no }}</td>
+            <td class="text-start">
+              <img src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{
+                  team.team_id
+                }}.png?v=7" alt="{{ team.name }}" style="width: 34px; height: 20px" class="team-logo shadow border" />
+              <a class="link-button" routerLink="/team-detail/{{ team.team_id }}">{{ team.team_name }}</a>
+            </td>
+            <td>{{ team.Matches }}</td>
+            <td>{{ team.Points }}</td>
+            <td>{{ team.Rating }}</td>
+            <td>
+              <a routerLink="/team-detail/{{ team.team_id }}" class="btn btn-secondary btn-sm ms-3">View</a>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #NoRecords>
+          <tr>
+            <td colspan="6" class="text-center text-secondary">
+              No records found
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal fade" id="tournamentModal" tabindex="-1" aria-labelledby="tournamentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tournamentModalLabel">
+          {{ isEditMode ? "Edit Tournament" : "Create Tournament" }}
+        </h5>
+        <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <!-- <div class="mb-3">
+              <label for="team_name" class="form-label">Team Name</label>
+              <input type="text" class="form-control" id="team_name" formControlName="team_name"
+                [ngClass]="{ 'is-invalid': submitted && f.team_name.errors }" placeholder="Enter team name" />
+              <div *ngIf="submitted && f.team_name.errors" class="invalid-feedback">
+                <div *ngIf="f.team_name.errors.required">Name is required</div>
+              </div>
+            </div> -->
+            <div class="mb-3">
+              <label for="team_name" class="form-label">Team Name</label>
+              <ng-select [multiple]="false" placeholder="Select Team" formControlName="team_name" [items]="newTeams"
+                bindValue="Country_id" bindLabel="Country" [closeOnSelect]="true"
+                [ngClass]="{ 'is-invalid': submitted && f.team_name.errors }">
+              </ng-select>
+              <div *ngIf="submitted && f.team_name.errors" class="invalid-feedback">
+                <div *ngIf="f.team_name.errors.required">Team is required</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="Matches" class="form-label">Matches</label>
+              <input type="number" class="form-control" id="Matches" formControlName="Matches"
+                [ngClass]="{ 'is-invalid': submitted && f.Matches.errors }" placeholder="Enter match name" />
+              <div *ngIf="submitted && f.Matches.errors" class="invalid-feedback">
+                <div *ngIf="f.Matches.errors.required">Match is required</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="Points" class="form-label">Points</label>
+              <input type="number" class="form-control" id="Points" formControlName="Points"
+                [ngClass]="{ 'is-invalid': submitted && f.Points.errors }" placeholder="Enter Point" />
+              <div *ngIf="submitted && f.Points.errors" class="invalid-feedback">
+                <div *ngIf="f.Points.errors.required">Point is required</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="Rating" class="form-label">Rating</label>
+              <input type="number" class="form-control" id="Rating" formControlName="Rating"
+                [ngClass]="{ 'is-invalid': submitted && f.Rating.errors }" placeholder="Enter rating" />
+              <div *ngIf="submitted && f.Rating.errors" class="invalid-feedback">
+                <div *ngIf="f.Rating.errors.required">Name is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">
+              {{ isEditMode ? "Update" : "Create" }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

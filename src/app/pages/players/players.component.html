@@ -1,0 +1,134 @@
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <h4>{{ team.team_name }} Players List <img *ngIf="!_.isEmpty(team)"
+                src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{team.team_id}}.png?v=7"
+                alt="{{team.name}}" style="height: 30px;" class="team-logo border">
+        </h4>
+        <button class="btn btn-primary btn-sm" (click)="openTeamModal()">
+            Add Player
+        </button>
+    </div>
+
+    <div class="form-group w-auto" style="max-width: 300px;">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search player name" [(ngModel)]="searchText"
+                (input)="searchTeam()" />
+
+        </div>
+    </div>
+
+    <div class="table-responsive border rounded mt-3">
+        <table class="table text-center table-borderless table-striped mt-2 mb-0">
+            <thead>
+                <tr class="border-2 border-top-0 border-start-0 border-end-0 border-info">
+                    <th>{{ this.team_id ? 'No' : 'Pos' }}</th>
+                    <th class="text-start">Player Name</th>
+                    <th *ngIf="_.isEmpty(team)" class="text-start">Team</th>
+                    <th>Points</th>
+                    <th class="text-end">Career Batting Best</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="pagination.data.length > 0; else NoRecords">
+                    <tr class="border-bottom" *ngFor="let player of pagination.data; let i = index;">
+                        <td>{{ this.team_id ? (i+1) : player.no }}</td>
+                        <td class="text-start">{{ player.Player_name }}</td>
+                        <td class="text-start" *ngIf="_.isEmpty(team)">
+                            <img src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{player.team_id}}.png?v=7"
+                                alt="{{player.name}}" style="width: 34px;height: 20px;"
+                                class="player-logo shadow border" />
+                            <a class="link-button" routerLink="/team-detail/{{player.team_id}}">{{ player.team_name
+                                }}</a>
+                        </td>
+                        <td>{{ player.Points }}</td>
+                        <td class="text-end">{{ player.careerbest }}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm ms-3"
+                                routerLink="/player-detail/{{player.Country_id}}/{{player.Player_id}}">View</button>
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-template #NoRecords>
+                    <tr>
+                        <td colspan="6" class="text-center text-secondary">No records found</td>
+                    </tr>
+                </ng-template>
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-between mt-3" *ngIf="pagination.totalItems > 10">
+        <div class="d-flex">
+            <button class="btn btn-secondary btn-sm" [disabled]="pagination.currentPage == 1"
+                (click)="pageChanged('prev')">Previous</button>
+            <span class="border border-2 mx-2 p-1 px-2 rounded">{{ pagination.currentPage }}</span>
+            <button class="btn btn-secondary btn-sm" [disabled]="pagination.currentPage == pagination.lastPage"
+                (click)="pageChanged('next')">Next</button>
+        </div>
+        <div>
+            <span class="text-muted">Page {{ pagination.currentPage }} of {{ pagination.lastPage }}</span>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="tournamentModal" tabindex="-1" aria-labelledby="tournamentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tournamentModalLabel">Create Player</h5>
+                <button type="button" id="btn-close" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="Player_name" class="form-label">Player Name</label>
+                            <input autocomplete="off" type="text" class="form-control" id="Player_name"
+                                formControlName="Player_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.Player_name.errors }"
+                                placeholder="Enter Player name">
+                            <div *ngIf="submitted && f.Player_name.errors" class="invalid-feedback">
+                                <div *ngIf="f.Player_name.errors.required">Player Name is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3" *ngIf="!team_id">
+                            <label for="team_name" class="form-label">Team</label>
+                            <select class="form-select" id="team_name" formControlName="team_name" name="team_name"
+                                [ngClass]="{ 'is-invalid': submitted && f.team_name.errors }">
+                                <option value="" disabled>Select Team</option>
+                                <option *ngFor="let team of teams_" [ngValue]="team">{{ team.team_name }}</option>
+                            </select>
+
+                            <div *ngIf="submitted && f.team_name.errors" class="invalid-feedback">
+                                <div *ngIf="f.team_name.errors.required">team name is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Points" class="form-label">Points</label>
+                            <input autocomplete="off" type="number" class="form-control" id="Points"
+                                formControlName="Points" [ngClass]="{ 'is-invalid': submitted && f.Points.errors }"
+                                placeholder="Enter Points">
+                            <div *ngIf="submitted && f.Points.errors" class="invalid-feedback">
+                                <div *ngIf="f.Points.errors.required">Points is required</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="battingbest" class="form-label">Career Batting Best</label>
+                            <input autocomplete="off" type="text" class="form-control" id="overs"
+                                formControlName="careerbest"
+                                [ngClass]="{ 'is-invalid': submitted && f.careerbest.errors }"
+                                placeholder="Enter Batting Best">
+                            <div *ngIf="submitted && f.careerbest.errors" class="invalid-feedback">
+                                <div *ngIf="f.careerbest.errors.required">Best is required</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

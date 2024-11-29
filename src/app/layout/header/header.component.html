@@ -1,0 +1,20 @@
+<nav class="navbar navbar-expand-lg navbar-light text-white bg-dark z-2">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center">
+      <a class="navbar-brand" [ngClass]="{ 'ms-1': !sidebarOpen }">
+        <img
+          [src]="
+            sidebarOpen ? '/images/logo.png' : '/images/minimized-logo.png'
+          "
+          alt="logo"
+          style="max-width: 200px; max-height: 30px"
+          class="d-inline-block align-text-top"
+        />
+      </a>
+      <a class="fs-4 text-white" (click)="onToggleSidebar()">
+        <i class="bi bi-list"></i>
+      </a>
+    </div>
+    <i class="bi bi-person-circle profile-icon" (click)="goToProfile()"></i>
+  </div>
+</nav>

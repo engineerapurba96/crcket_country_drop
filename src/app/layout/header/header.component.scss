@@ -1,0 +1,16 @@
+.profile-icon {
+  font-size: 24px;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.profile-icon:hover {
+  color: #007bff;
+}
+nav.navbar {
+  position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+  z-index: 1;
+}

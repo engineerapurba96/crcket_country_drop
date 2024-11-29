@@ -1,0 +1,110 @@
+<div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header text-center">
+            <h4>{{ player.Player_name }}</h4>
+          </div>
+          <div class="card-body px-0 pt-0">
+            <div class="bg-secondary-subtle text-center p-3">
+              <img
+                src="https://images.icc-cricket.com/icc-web/image/upload/t_player-headshot-portrait/prd/assets/players/generic/colored/{{player.Player_id}}.png"
+                alt="{{player.Player_id}}"
+                height="200"
+                class="player-logo rounded-circle bg-white px-4"
+              />
+            </div>
+            <div class="p-3">
+              <p><strong>Player ID:</strong> {{ player.Player_id }}</p>
+              <p>
+                <strong>Team:</strong>
+                <!-- <img
+                  src="https://assets-icc.sportz.io/static-assets/buildv3-stg/images/teams/{{player.team_id}}.png?v=7"
+                  alt="{{player.name}}"
+                  height="20"
+                  class="player-logo border mx-1"
+                /> -->
+                {{ player.team_name }} ({{ player.Country }})
+              </p>
+              <p><strong>Points:</strong> {{ player.Points }}</p>
+              <p><strong>Career Best:</strong> {{ player.careerbest }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batting Career Summary Table -->
+      <div class="col-md-8">
+        <p>{{ player.Player_name }} played a major role in Central Districts winning the 2017-18 Plunket Shield. He was the second highest run-getter for his side and fourth overall, with 686 runs in 10 games. In fact, he has been the most consistent batsman for the Stags over a period of time.</p>
+        <h6>Batting Career Summary</h6>
+        <table class="table table-bordered table-striped text-center">
+          <thead class="table-light">
+            <tr>
+              <th></th>
+              <th>M</th>
+              <th>Inn</th>
+              <th>NO</th>
+              <th>Runs</th>
+              <th>HS</th>
+              <th>Avg</th>
+              <th>BF</th>
+              <th>SR</th>
+              <th>100</th>
+              <th>200</th>
+              <th>50</th>
+              <th>4s</th>
+              <th>6s</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let career of player.careerStats">
+              <td class="fw-bold">{{career.format}}</td>
+              <td>{{ career.Matches }}</td>
+              <td>{{ career.Innings }}</td>
+              <td>{{ career.NotOuts }}</td>
+              <td>{{ career.Runs }}</td>
+              <td>{{ career.HighScore }}</td>
+              <td>{{ career.Avg }}</td>
+              <td>{{ career.BallsFaced }}</td>
+              <td>{{ career.StrikeRate }}</td>
+              <td>{{ career.Hundreds }}</td>
+              <td>{{ career.DoubleHundreds }}</td>
+              <td>{{ career.Fifties }}</td>
+              <td>{{ career.Fours }}</td>
+              <td>{{ career.Sixes }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <h6>Bowling Career Summary</h6>
+        <table class="table table-bordered table-striped text-center">
+          <thead class="table-light">
+            <tr>
+              <th></th>
+              <th>M</th>
+              <th>Inn</th>
+              <th>Balls</th>
+              <th>Runs</th>
+              <th>Wkts</th>
+              <th>Econ</th>
+              <th>Avg</th>
+              <th>SR</th>
+            </tr>
+            
+          </thead>
+          <tbody>
+            <tr  *ngFor="let career of player.careerStats">
+              <td class="fw-bold">{{career.format}}</td>
+              <td>{{ career.Matches }}</td>
+              <td>{{ career.BowlingInnings }}</td>
+              <td>{{ career.Balls }}</td>
+              <td>{{ career.BowlingRuns }}</td>
+              <td>{{ career.Wickets }}</td>
+              <td>{{ career.Economy }}</td>
+              <td>{{ career.BowlingAvg }}</td>
+              <td>{{ career.BowlingStrikeRate }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>

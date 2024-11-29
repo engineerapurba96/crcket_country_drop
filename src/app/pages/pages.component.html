@@ -1,0 +1,5 @@
+<app-sidebar [sidebarOpen]="sidebarOpen" (sidebarToggle)="sidebarOpen = $event"></app-sidebar>
+<app-header class="w-100" (toggleSidebar)="sidebarOpen = !sidebarOpen"></app-header>
+<div class="main-content">
+    <router-outlet></router-outlet>
+</div>
